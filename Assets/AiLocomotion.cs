@@ -14,6 +14,7 @@ public class AiLocomotion : MonoBehaviour
     NavMeshAgent agent;
     public AiStates defaultState = AiStates.idle;
     AiStates currentState;
+    GameObject spriteObj;
 
     [Header("Sight Setting")]
     public float sightDistance = 5f;
@@ -42,6 +43,7 @@ public class AiLocomotion : MonoBehaviour
         }
 
         currentState = defaultState;
+        spriteObj = GetComponentInChildren<SpriteRenderer>().gameObject;
     }
 
     private void Update()
@@ -60,7 +62,7 @@ public class AiLocomotion : MonoBehaviour
 
     void PartrolUpdate()
     {
-        fieldOfView.SetOrigin(transform.position);
+        fieldOfView.SetOrigin(spriteObj.transform.position);
         fieldOfView.SetAimDirection(agent.desiredVelocity.normalized);
         fieldOfView.SetFoV(fov);
         fieldOfView.SetViewDistance(sightDistance);
