@@ -1140,6 +1140,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 84f26f4cb30860b4a85cebbf0cfb7496, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  sightLayer:
+    serializedVersion: 2
+    m_Bits: 72
   defaultState: 2
   currentState: 2
   sightDistance: 3
@@ -1148,7 +1151,7 @@ MonoBehaviour:
   partrolPoints: []
   partrolSpeed: 1
   target: {fileID: 481117210}
-  chaseSpeed: 1.2
+  chaseSpeed: 1.5
 --- !u!195 &222994805
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -2253,7 +2256,7 @@ GameObject:
   - component: {fileID: 481117212}
   - component: {fileID: 481117211}
   - component: {fileID: 481117213}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Player
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3006,6 +3009,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 84f26f4cb30860b4a85cebbf0cfb7496, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  sightLayer:
+    serializedVersion: 2
+    m_Bits: 72
   defaultState: 2
   currentState: 0
   sightDistance: 3
@@ -3018,7 +3024,7 @@ MonoBehaviour:
   - {fileID: 601683701}
   partrolSpeed: 1
   target: {fileID: 481117210}
-  chaseSpeed: 1.2
+  chaseSpeed: 1.5
 --- !u!61 &1684299396
 BoxCollider2D:
   m_ObjectHideFlags: 0

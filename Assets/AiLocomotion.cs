@@ -11,6 +11,7 @@ public enum AiStates
 }
 public class AiLocomotion : MonoBehaviour
 {
+    public LayerMask sightLayer;
     NavMeshAgent agent;
     public AiStates defaultState = AiStates.idle;
     [SerializeField] AiStates currentState;
@@ -19,6 +20,7 @@ public class AiLocomotion : MonoBehaviour
     [Header("Sight Setting")]
     public float sightDistance = 5f;
     public float fov;
+    bool seeTarget = false;
 
     [Header("Line of Sight")]
     [SerializeField] private FieldOfView fieldOfView;
@@ -50,6 +52,8 @@ public class AiLocomotion : MonoBehaviour
     {
         UpdateRotation();
         UpdateViewCone();
+        if (!seeTarget)
+            seeTarget = SeeTarget();
         switch (currentState)
         {
             case AiStates.partrol:
@@ -84,7 +88,7 @@ public class AiLocomotion : MonoBehaviour
     {
         agent.speed = partrolSpeed;
         //Check Sight
-        if (SeeTarget())
+        if (seeTarget)
         {
             currentState = AiStates.chase;
             return;
@@ -110,27 +114,30 @@ public class AiLocomotion : MonoBehaviour
 
     bool SeeTarget()
     {
-        if (!target)
-            return false;
-        Vector2 dir = (target.position - transform.position).normalized;
-        RaycastHit2D hit = Physics2D.Raycast(transform.position, dir, sightDistance);
-        
-        if (Vector2.Angle(transform.right, dir) > fov/2f)
+        if (Vector3.Distance(GetPosition(), target.position) < sightDistance)
         {
-            Debug.Log("Angle Too Big");
-            return false;
-        }
-
-        if (hit.collider != null)
-        {
-            Debug.DrawLine(transform.position, hit.point, Color.red);
-            if (hit.collider.transform == target.transform)
+            // Player inside viewDistance
+            Vector3 dirToPlayer = (target.position - GetPosition()).normalized;
+            if (Vector3.Angle(agent.desiredVelocity, dirToPlayer) < fov / 2f)
             {
-                Debug.Log("See Target");
-                return true;
+                // Player inside Field of View
+                RaycastHit2D raycastHit2D = Physics2D.Raycast(GetPosition(), dirToPlayer, sightDistance, sightLayer);
+                if (raycastHit2D.collider != null)
+                {
+                    // Hit something
+                    Debug.Log(raycastHit2D.collider.gameObject);
+                    if (raycastHit2D.collider.gameObject.GetComponent<PlayerLocomotion>() != null)
+                    {
+                        // Hit Player
+                        return true;
+                    }
+                    else
+                    {
+                        // Hit something else
+                    }
+                }
             }
         }
-
         return false;
     }
 
@@ -143,4 +150,14 @@ public class AiLocomotion : MonoBehaviour
             transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
         }
     }
-}
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawLine(transform.position, target.position);
+    }
+    public Vector3 GetPosition()
+     {
+         return transform.position;
+      }
+    }
