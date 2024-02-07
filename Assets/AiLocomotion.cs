@@ -13,7 +13,7 @@ public class AiLocomotion : MonoBehaviour
 {
     NavMeshAgent agent;
     public AiStates defaultState = AiStates.idle;
-    AiStates currentState;
+    [SerializeField] AiStates currentState;
     GameObject spriteObj;
 
     [Header("Sight Setting")]
@@ -49,6 +49,7 @@ public class AiLocomotion : MonoBehaviour
     private void Update()
     {
         UpdateRotation();
+        UpdateViewCone();
         switch (currentState)
         {
             case AiStates.partrol:
@@ -57,15 +58,30 @@ public class AiLocomotion : MonoBehaviour
             case AiStates.chase:
                 ChaseUpdate();
                 break;
+            case AiStates.idle:
+                IdleUpdate();
+                break;
         }
     }
 
-    void PartrolUpdate()
+    void UpdateViewCone()
     {
         fieldOfView.SetOrigin(spriteObj.transform.position);
         fieldOfView.SetAimDirection(agent.desiredVelocity.normalized);
         fieldOfView.SetFoV(fov);
         fieldOfView.SetViewDistance(sightDistance);
+    }
+
+    void IdleUpdate()
+    {
+        if (SeeTarget())
+        {
+            currentState = AiStates.chase;
+        }
+    }
+
+    void PartrolUpdate()
+    {
         agent.speed = partrolSpeed;
         //Check Sight
         if (SeeTarget())
@@ -96,17 +112,21 @@ public class AiLocomotion : MonoBehaviour
     {
         if (!target)
             return false;
-        Vector3 dir = (target.position - transform.position).normalized;
-        RaycastHit2D hit = Physics2D.Raycast(transform.position, dir);
+        Vector2 dir = (target.position - transform.position).normalized;
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, dir, sightDistance);
+        
         if (Vector2.Angle(transform.right, dir) > fov/2f)
         {
+            Debug.Log("Angle Too Big");
             return false;
         }
 
         if (hit.collider != null)
         {
+            Debug.DrawLine(transform.position, hit.point, Color.red);
             if (hit.collider.transform == target.transform)
             {
+                Debug.Log("See Target");
                 return true;
             }
         }
