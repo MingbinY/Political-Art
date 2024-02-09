@@ -23,6 +23,7 @@ public class AiLocomotion : MonoBehaviour
     bool seeTarget = false;
 
     [Header("Line of Sight")]
+    public FieldOfView fovPrefab;
     [SerializeField] private FieldOfView fieldOfView;
 
     [Header("Partrol Settings")]
@@ -43,6 +44,8 @@ public class AiLocomotion : MonoBehaviour
         {
             defaultState = AiStates.partrol;
         }
+
+        fieldOfView = Instantiate(fovPrefab).GetComponent<FieldOfView>();
 
         currentState = defaultState;
         spriteObj = GetComponentInChildren<SpriteRenderer>().gameObject;
@@ -71,7 +74,7 @@ public class AiLocomotion : MonoBehaviour
     void UpdateViewCone()
     {
         fieldOfView.SetOrigin(spriteObj.transform.position);
-        fieldOfView.SetAimDirection(agent.desiredVelocity.normalized);
+        fieldOfView.SetAimDirection(transform.right.normalized);
         fieldOfView.SetFoV(fov);
         fieldOfView.SetViewDistance(sightDistance);
     }
@@ -118,7 +121,7 @@ public class AiLocomotion : MonoBehaviour
         {
             // Player inside viewDistance
             Vector3 dirToPlayer = (target.position - GetPosition()).normalized;
-            if (Vector3.Angle(agent.desiredVelocity, dirToPlayer) < fov / 2f)
+            if (Vector3.Angle(transform.right, dirToPlayer) < fov / 2f)
             {
                 // Player inside Field of View
                 RaycastHit2D raycastHit2D = Physics2D.Raycast(GetPosition(), dirToPlayer, sightDistance, sightLayer);
@@ -160,4 +163,8 @@ public class AiLocomotion : MonoBehaviour
      {
          return transform.position;
       }
+    private void OnDestroy()
+    {
+        Destroy(fieldOfView.gameObject);
     }
+}
