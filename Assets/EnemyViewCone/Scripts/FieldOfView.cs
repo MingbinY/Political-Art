@@ -16,7 +16,7 @@ using UnityEngine;
 
 public class FieldOfView : MonoBehaviour {
 
-    [SerializeField] private LayerMask layerMask;
+    [SerializeField] public LayerMask layerMask;
     private Mesh mesh;
     private float fov;
     private float viewDistance;

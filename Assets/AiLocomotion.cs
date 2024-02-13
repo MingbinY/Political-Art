@@ -12,6 +12,7 @@ public enum AiStates
 public class AiLocomotion : MonoBehaviour
 {
     public LayerMask sightLayer;
+    public LayerMask fovObstacleLayer;
     NavMeshAgent agent;
     public AiStates defaultState = AiStates.idle;
     [SerializeField] AiStates currentState;
@@ -46,7 +47,7 @@ public class AiLocomotion : MonoBehaviour
         }
 
         fieldOfView = Instantiate(fovPrefab).GetComponent<FieldOfView>();
-
+        fieldOfView.layerMask = fovObstacleLayer;
         currentState = defaultState;
         spriteObj = GetComponentInChildren<SpriteRenderer>().gameObject;
     }
@@ -163,8 +164,4 @@ public class AiLocomotion : MonoBehaviour
      {
          return transform.position;
       }
-    private void OnDestroy()
-    {
-        Destroy(fieldOfView.gameObject);
-    }
 }
