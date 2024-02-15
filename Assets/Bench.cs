@@ -6,6 +6,18 @@ public class Bench : MonoBehaviour
 {
     bool playerEntered = false;
 
+    public List<Sprite> hostileSprites;
+    SpriteRenderer spriteRenderer;
+
+    public Sprite goodBenchSprite;
+
+    private void Awake()
+    {
+        //Assign random sprite
+        spriteRenderer = GetComponent<SpriteRenderer>();
+        spriteRenderer.sprite = hostileSprites[Random.Range(0, hostileSprites.Count)];
+    }
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.GetComponent<PlayerLocomotion>() != null)
@@ -28,7 +40,7 @@ public class Bench : MonoBehaviour
         {
             if (Input.GetKeyDown(KeyCode.F))
             {
-                Destroy(gameObject);
+                spriteRenderer.sprite = goodBenchSprite;
             }
         }
     }

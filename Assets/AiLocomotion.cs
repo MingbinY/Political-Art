@@ -41,6 +41,7 @@ public class AiLocomotion : MonoBehaviour
         agent = GetComponent<NavMeshAgent>();
         agent.updateRotation = false;
         agent.updateUpAxis = false;
+        agent.angularSpeed = 0;
         if (partrolPoints.Count > 0)
         {
             defaultState = AiStates.partrol;
