@@ -42,6 +42,7 @@ public class AiLocomotion : MonoBehaviour
         agent.updateRotation = false;
         agent.updateUpAxis = false;
         agent.angularSpeed = 0;
+        target = FindObjectOfType<PlayerLocomotion>().transform;
         if (partrolPoints.Count > 0)
         {
             defaultState = AiStates.partrol;
@@ -55,7 +56,7 @@ public class AiLocomotion : MonoBehaviour
 
     private void Update()
     {
-        UpdateRotation();
+        //UpdateRotation();
         UpdateViewCone();
         if (!seeTarget)
             seeTarget = SeeTarget();
@@ -75,8 +76,8 @@ public class AiLocomotion : MonoBehaviour
 
     void UpdateViewCone()
     {
-        fieldOfView.SetOrigin(spriteObj.transform.position);
-        fieldOfView.SetAimDirection(transform.right.normalized);
+        fieldOfView.SetOrigin(transform.position);
+        fieldOfView.SetAimDirection(agent.desiredVelocity.normalized);
         fieldOfView.SetFoV(fov);
         fieldOfView.SetViewDistance(sightDistance);
     }
@@ -96,6 +97,8 @@ public class AiLocomotion : MonoBehaviour
         if (seeTarget)
         {
             currentState = AiStates.chase;
+            AudioManager.Instance.CopSeenClip();
+            MusicManager.Instance.Chasing();
             return;
         }
 
@@ -113,6 +116,12 @@ public class AiLocomotion : MonoBehaviour
         agent.speed = chaseSpeed;
         if (target != null)
         {
+            Debug.Log((target.position - transform.position).magnitude);
+            if ((target.position - transform.position).magnitude < GameManager.Instance.loseDistance)
+            {
+                GameManager.Instance.Lose();
+                return;
+            }
             agent.SetDestination(target.position);
         }
     }
@@ -123,7 +132,7 @@ public class AiLocomotion : MonoBehaviour
         {
             // Player inside viewDistance
             Vector3 dirToPlayer = (target.position - GetPosition()).normalized;
-            if (Vector3.Angle(transform.right, dirToPlayer) < fov / 2f)
+            if (Vector3.Angle(agent.desiredVelocity.normalized, dirToPlayer) < fov / 2f)
             {
                 // Player inside Field of View
                 RaycastHit2D raycastHit2D = Physics2D.Raycast(GetPosition(), dirToPlayer, sightDistance, sightLayer);
@@ -154,12 +163,6 @@ public class AiLocomotion : MonoBehaviour
             float angle = Mathf.Atan2(moveDirection.y, moveDirection.x) * Mathf.Rad2Deg;
             transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
         }
-    }
-
-    private void OnDrawGizmos()
-    {
-        Gizmos.color = Color.red;
-        Gizmos.DrawLine(transform.position, target.position);
     }
     public Vector3 GetPosition()
      {

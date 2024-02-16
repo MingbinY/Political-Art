@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class PlayerLocomotion : MonoBehaviour
 {
+    PlayerAnimationManager animManager;
+
     public float moveSpeed = 5f;
 
     Rigidbody2D rb;
@@ -12,6 +14,7 @@ public class PlayerLocomotion : MonoBehaviour
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
+        animManager = GetComponent<PlayerAnimationManager>();
     }
 
     private void Update()
@@ -39,10 +42,6 @@ public class PlayerLocomotion : MonoBehaviour
 
     void UpdateRotation()
     {
-        if (movementVector != Vector2.zero)
-        {
-            float angle = Mathf.Atan2(movementVector.y, movementVector.x) * Mathf.Rad2Deg;
-            transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
-        }
+        animManager.currentVector = movementVector;
     }
 }

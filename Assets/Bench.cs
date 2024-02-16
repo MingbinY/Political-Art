@@ -10,6 +10,7 @@ public class Bench : MonoBehaviour
     SpriteRenderer spriteRenderer;
 
     public Sprite goodBenchSprite;
+    public GameObject homelessMan;
 
     private void Awake()
     {
@@ -40,7 +41,9 @@ public class Bench : MonoBehaviour
         {
             if (Input.GetKeyDown(KeyCode.F))
             {
+                GameManager.Instance.FixedBench();
                 spriteRenderer.sprite = goodBenchSprite;
+                homelessMan.SetActive(true);
             }
         }
     }
