@@ -44,7 +44,11 @@ public class GameManager : MonoBehaviour
         if (currentBench == targetBench - 3)
         {
             MusicManager.Instance.Ending();
-            startChasing = true;
+        }
+
+        if (currentBench == targetBench - 1) 
+        { 
+            startChasing = true; 
         }
 
         if (patrolSpeed <= 1.8f)
