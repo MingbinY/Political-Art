@@ -12,6 +12,8 @@ public class Bench : MonoBehaviour
     public Sprite goodBenchSprite;
     public GameObject homelessMan;
 
+    bool benchFixed  = false;
+
     private void Awake()
     {
         //Assign random sprite
@@ -37,13 +39,14 @@ public class Bench : MonoBehaviour
 
     private void Update()
     {
-        if (playerEntered)
+        if (playerEntered && !benchFixed)
         {
             if (Input.GetKeyDown(KeyCode.F))
             {
                 GameManager.Instance.FixedBench();
                 spriteRenderer.sprite = goodBenchSprite;
                 homelessMan.SetActive(true);
+                benchFixed = true;
             }
         }
     }

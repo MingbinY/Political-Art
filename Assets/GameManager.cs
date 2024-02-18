@@ -14,7 +14,15 @@ public class GameManager : MonoBehaviour
     int targetBench = 0;
     int currentBench = 0;
 
+    public bool startChasing = false;
+
     public float loseDistance = 0.2f;
+
+    [Header("Cop Settings")]
+    public float patrolSpeed = 1.0f;
+    public float defaultSpeed = 1.0f;
+    public float increaseRate = 1.0f;
+    public float maxSpeed = 1.8f;
 
     private void Awake()
     {
@@ -36,7 +44,12 @@ public class GameManager : MonoBehaviour
         if (currentBench == targetBench - 3)
         {
             MusicManager.Instance.Ending();
+            startChasing = true;
         }
+
+        if (patrolSpeed <= 1.8f)
+            patrolSpeed += increaseRate;
+        if (patrolSpeed > 1.8f) patrolSpeed = 1.8f;
     }
 
     public void Lose()

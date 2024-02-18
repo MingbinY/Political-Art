@@ -92,9 +92,9 @@ public class AiLocomotion : MonoBehaviour
 
     void PartrolUpdate()
     {
-        agent.speed = partrolSpeed;
+        agent.speed = GameManager.Instance.patrolSpeed;
         //Check Sight
-        if (seeTarget)
+        if (seeTarget || GameManager.Instance.startChasing)
         {
             currentState = AiStates.chase;
             AudioManager.Instance.CopSeenClip();
