@@ -10,6 +10,7 @@ public class GameManager : MonoBehaviour
 
     public GameObject winScreen;
     public GameObject loseScreen;
+    public GameObject runAwayScreen;
 
     int targetBench = 0;
     int currentBench = 0;
@@ -84,6 +85,19 @@ public class GameManager : MonoBehaviour
         FindObjectOfType<PlayerLocomotion>().enabled = false;
         winScreen.SetActive(true);
         AudioManager.Instance.WinClip();
+    }
+
+    public void RunAway()
+    {
+        AiLocomotion[] aiLocomotions = FindObjectsOfType<AiLocomotion>();
+        foreach (AiLocomotion ai in aiLocomotions)
+        {
+            ai.enabled = false;
+            ai.GetComponent<NavMeshAgent>().enabled = false;
+        }
+        // Disable player control
+        FindObjectOfType<PlayerLocomotion>().enabled = false;
+        runAwayScreen.SetActive(true);
     }
 
     public void Restart()
